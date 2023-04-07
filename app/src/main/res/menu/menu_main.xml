@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_screen"
+        android:icon="@drawable/ic_outline_view_agenda"
+        android:title="Screens" />
+
+    <item
+        android:id="@+id/menu_apps"
+        android:icon="@drawable/ic_outline_grid_view"
+        android:title="Apps" />
+
+    <item
+        android:id="@+id/menu_updates"
+        android:icon="@drawable/ic_receipt_long"
+        android:title="Updates" />
+
+    <item
+        android:id="@+id/menu_setting"
+        android:icon="@drawable/ic_settings_outline"
+        android:checked="true"
+        android:title="Settings" />
+
+</menu>

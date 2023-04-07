@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include layout="@layout/toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/grey_3">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/object"
+                android:layout_width="160dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="OBJECT"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textColor="@color/white"
+                    app:fontFamily="sans-serif-medium" />
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:clipToPadding="false"
+            android:paddingVertical="10dp">
+
+            <RadioGroup
+                android:id="@+id/group_basic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_large">
+
+                <RadioButton
+                    android:id="@+id/fade_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade In"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/fade_in_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade In Up"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/fade_in_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade In Down"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/fade_in_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade In Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/fade_in_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade In Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/fade_out"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade Out"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/fade_out_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade Out Up"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/fade_out_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade Out Down"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/fade_out_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade Out Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/fade_out_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Fade Out Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/bounce_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Bounce In"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/bounce_in_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Bounce In Down"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/bounce_in_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Bounce In Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/bounce_in_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Bounce In Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/bounce_in_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Bounce In Up"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/zoom_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom In"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/zoom_in_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom In Down"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/zoom_in_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom In Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/zoom_in_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom In Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/zoom_in_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom In Up"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/zoom_out"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom Out"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/zoom_out_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom Out Up"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/zoom_out_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom Out Down"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/zoom_out_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom Out Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/zoom_out_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Zoom Out Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/slide_in_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Slide In Up"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/slide_in_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Slide In Down"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/slide_in_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Slide In Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/slide_in_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Slide In Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/slide_out_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Slide Out Up"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/slide_out_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Slide Out Down"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/slide_out_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Slide Out Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/slide_out_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Slide Out Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/rotate_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate In"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/rotate_in_down_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate In Down Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/rotate_in_down_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate In Down Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/rotate_in_up_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate In Up Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/rotate_in_up_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate In Up Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/rotate_out"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate Out"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/rotate_out_down_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate Out Down Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/rotate_out_down_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate Out Down Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/rotate_out_up_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate Out Up Left"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/rotate_out_up_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Rotate Out Up Right"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_middle"
+                    android:background="@color/grey_5" />
+
+                <RadioButton
+                    android:id="@+id/flip_in_x"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Flip In X"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/flip_out_x"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Flip Out X"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/flip_in_y"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Flip in Y"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/flip_out_y"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:text="Flip Out Y"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+            </RadioGroup>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
+

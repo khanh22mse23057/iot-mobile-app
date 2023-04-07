@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include layout="@layout/toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/grey_3">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerVertical="true"
+                android:background="@color/grey_20" />
+
+            <ImageView
+                android:id="@+id/object"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="@dimen/spacing_large"
+                android:src="@drawable/shape_circle"
+                app:tint="@color/colorAccent" />
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:clipToPadding="false"
+            android:paddingVertical="10dp">
+
+            <RadioGroup
+                android:id="@+id/group_basic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_large">
+
+                <RadioButton
+                    android:id="@+id/inter_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Linear Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_accelerate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Accelerate Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_decelerate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Decelerate Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_accelerate_decelerate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Accelerate Decelerate Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_overshoot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Overshoot Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_anticipate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Anticipate Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_anticipate_overshoot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Anticipate Overshoot Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_bounce"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Bounce In Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_fast_out_linear_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Fast Out Linear In Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_fast_out_slow_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Fast Out Slow In Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+                <RadioButton
+                    android:id="@+id/inter_linear_out_slow_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layoutDirection="rtl"
+                    android:paddingHorizontal="@dimen/spacing_medium"
+                    android:paddingVertical="@dimen/spacing_middle"
+                    android:text="Linear Out Slow In Interpolator"
+                    android:textColor="@color/grey_60"
+                    app:buttonTint="@color/grey_40" />
+
+            </RadioGroup>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
+

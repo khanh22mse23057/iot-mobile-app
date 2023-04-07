@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darkHome"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/darkHomeDark"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginLeft="@dimen/spacing_medium"
+                android:layout_marginRight="@dimen/spacing_medium"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="@string/app_name"
+                app:titleTextAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:titleTextColor="@color/grey_20" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/include_menu_screens" />
+
+            <include layout="@layout/include_menu_apps" />
+
+            <include layout="@layout/include_menu_updates" />
+
+            <include layout="@layout/include_menu_settings" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_bar"
+            android:background="@color/darkHomeDark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ad_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/main_bottom_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/darkHomeDark"
+                android:paddingHorizontal="@dimen/spacing_middle"
+                app:elevation="15dp"
+                app:itemIconSize="22dp"
+                app:itemIconTint="@color/color_state_main"
+                app:itemPaddingTop="13dp"
+                app:itemTextAppearanceActive="@style/TextAppearance.VerySmall"
+                app:itemTextAppearanceInactive="@style/TextAppearance.VerySmall"
+                app:itemTextColor="@color/color_state_main"
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/menu_main" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

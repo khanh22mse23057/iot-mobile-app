@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_apps"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darkHome"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/spacing_xxxlarge"
+    android:visibility="visible">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spacing_large" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/spacing_middle"
+        android:visibility="visible"
+        app:flexWrap="wrap">
+
+        <RelativeLayout
+            android:layout_width="@dimen/applications_grid"
+            android:layout_height="@dimen/applications_grid"
+            android:layout_margin="@dimen/spacing_middle"
+            android:background="@drawable/round_shape_app">
+
+            <LinearLayout
+                android:id="@+id/lyt_app_taxi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_large"
+                android:paddingTop="@dimen/spacing_xmlarge"
+                android:paddingBottom="@dimen/spacing_mlarge">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/app_logo_taxi"
+                    app:tint="@color/grey_20" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_mlarge"
+                    android:layout_marginBottom="@dimen/spacing_medium"
+                    android:text="Taxi App"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="@color/grey_10" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/spacing_large"
+                android:text="new"
+                android:textColor="@color/grey_40"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/applications_grid"
+            android:layout_height="@dimen/applications_grid"
+            android:layout_margin="@dimen/spacing_middle"
+            android:background="@drawable/round_shape_app">
+
+            <LinearLayout
+                android:id="@+id/lyt_app_mailbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/app_logo_mailbox"
+                    app:tint="@color/grey_20" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_mlarge"
+                    android:layout_marginBottom="@dimen/spacing_medium"
+                    android:text="Mailbox App"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="@color/grey_10" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/spacing_large"
+                android:text="new"
+                android:textColor="@color/grey_40"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/applications_grid"
+            android:layout_height="@dimen/applications_grid"
+            android:layout_margin="@dimen/spacing_middle"
+            android:background="@drawable/round_shape_app">
+
+            <LinearLayout
+                android:id="@+id/lyt_app_news"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_large"
+                android:paddingTop="@dimen/spacing_xmlarge"
+                android:paddingBottom="@dimen/spacing_mlarge">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/app_logo_news"
+                    app:tint="@color/grey_20" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_mlarge"
+                    android:layout_marginBottom="@dimen/spacing_medium"
+                    android:text="News App"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="@color/grey_10" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/spacing_large"
+                android:text="new"
+                android:textColor="@color/grey_40"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/applications_grid"
+            android:layout_height="@dimen/applications_grid"
+            android:layout_margin="@dimen/spacing_middle"
+            android:background="@drawable/round_shape_app">
+
+            <LinearLayout
+                android:id="@+id/lyt_app_social"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_large"
+                android:paddingTop="@dimen/spacing_xmlarge"
+                android:paddingBottom="@dimen/spacing_mlarge">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/app_logo_social"
+                    app:tint="@color/grey_20" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_mlarge"
+                    android:layout_marginBottom="@dimen/spacing_medium"
+                    android:text="Social App"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="@color/grey_10" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/spacing_large"
+                android:text="new"
+                android:textColor="@color/grey_40"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/applications_grid"
+            android:layout_height="@dimen/applications_grid"
+            android:layout_margin="@dimen/spacing_middle"
+            android:background="@drawable/round_shape_app">
+
+            <LinearLayout
+                android:id="@+id/lyt_app_shop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_large"
+                android:paddingTop="@dimen/spacing_xmlarge"
+                android:paddingBottom="@dimen/spacing_mlarge">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/app_logo_shop"
+                    app:tint="@color/grey_20" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_mlarge"
+                    android:layout_marginBottom="@dimen/spacing_medium"
+                    android:text="Shop App"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textColor="@color/grey_10" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/spacing_large"
+                android:text="new"
+                android:textColor="@color/grey_40"
+                android:textSize="10sp" />
+
+        </RelativeLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+
+</LinearLayout>
