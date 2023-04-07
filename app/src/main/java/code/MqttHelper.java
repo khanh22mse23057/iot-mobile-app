@@ -18,7 +18,7 @@ public class MqttHelper {
 
     public static String serverUri = "io.adafruit.com";
     public static String clientId = "khanhpnp90";
-    public static String secretKey = "aio_rSar06WUGefTM7GcUtS0saftVTPj";
+    public static String secretKey = "";
     public static String feed_btn_reset = "/feeds/btn-reset";
     public static String feed_btn_stage = "/feeds/btn-stage";
     public static String feed_message = "/feeds/message";

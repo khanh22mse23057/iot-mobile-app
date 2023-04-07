@@ -39,7 +39,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     
-    implementation project(path: ':screens')
+  implementation project(path: ':screens')
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
