@@ -114,12 +114,13 @@ public class ActivityMainMenu extends AppCompatActivity {
                 Log.i(ActivityMainMenu.class.getName(), topic + " ==> " + message);
                 String feedId = topic.replace(MqttHelper.clientId, "").toString().trim().toLowerCase();
                 Log.i(ActivityMainMenu.class.getName(), feedId + " ==> " + message);
-                TriStateToggleButton.ToggleStatus status ;
+                TriStateToggleButton.ToggleStatus status;
                 if (MqttHelper.feed_btn_reset.toLowerCase().equals(feedId)) {
                     try {
-                        status = !Boolean.parseBoolean(message) ? TriStateToggleButton.ToggleStatus.off : TriStateToggleButton.ToggleStatus.on;
-                        btnToggle1.setToggleStatus(status);
+
+                        btnToggle1.setToggleStatus("0".equals(message) == false);
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
                     return;
@@ -128,9 +129,10 @@ public class ActivityMainMenu extends AppCompatActivity {
                 if (MqttHelper.feed_btn_stage.toLowerCase().equals(feedId)) {
                     try {
                         status = Boolean.parseBoolean(message) ? TriStateToggleButton.ToggleStatus.on : TriStateToggleButton.ToggleStatus.off;
-                        btnToggle2.setToggleStatus(status);
+                        btnToggle2.setToggleStatus("0".equals(message) == false);
 
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                     return;
                 }
@@ -142,6 +144,7 @@ public class ActivityMainMenu extends AppCompatActivity {
                         Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                         imgView.setImageBitmap(decodedBitmap);
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                     return;
                 }
@@ -155,6 +158,7 @@ public class ActivityMainMenu extends AppCompatActivity {
                     try {
                         meterHumidity.speedTo(Float.parseFloat(message));
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                     return;
                 }
@@ -163,6 +167,7 @@ public class ActivityMainMenu extends AppCompatActivity {
                     try {
                         meterTemper.speedTo(Float.parseFloat(message));
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                     return;
                 }
