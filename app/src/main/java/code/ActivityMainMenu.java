@@ -77,6 +77,24 @@ public class ActivityMainMenu extends AppCompatActivity {
         btnToggle1 = findViewById(R.id._id_btnToggle1);
         btnToggle2 = findViewById(R.id._id_btnToggle2);
 
+        btnToggle1.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
+               int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
+                Log.i(ActivityMainMenu.class.getName(), "btnToggle1 setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
+               mqttHelper.pushDataToTopic(MqttHelper.feed_btn_stage, status +"");
+            }
+        });
+
+        btnToggle2.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
+                int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
+                Log.i(ActivityMainMenu.class.getName(), "btnToggle1 setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
+                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_reset, status +"");
+            }
+        });
+
         meterTemper = findViewById(R.id._id_gauge_temper);
         meterHumidity = findViewById(R.id._id_gauge_humidity);
         temperChart = findViewById(R.id._id_chart);

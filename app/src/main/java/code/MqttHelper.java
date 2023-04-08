@@ -13,6 +13,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.nio.charset.Charset;
+
 public class MqttHelper {
     private MqttAndroidClient mqttAndroidClient;
 
@@ -145,6 +147,18 @@ public class MqttHelper {
             ex.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void pushDataToTopic(String topic, String value){
+        MqttMessage msg = new MqttMessage();
+        msg.setRetained(false);
+        String subscriptionTopic = clientId + topic;
+        byte[] b = value.getBytes(Charset.forName("UTF-8"));
+        msg.setPayload(b);
+        try {
+            mqttAndroidClient.publish(subscriptionTopic, msg);
+        }catch (MqttException e){
         }
     }
 }
