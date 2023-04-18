@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/darkHomeDark"
+            android:visibility="gone"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <androidx.appcompat.widget.Toolbar
@@ -36,11 +37,10 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <RelativeLayout
-            android:layout_marginTop="@dimen/spacing_mlarge"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <include layout="@layout/include_iot_dashboard" />
+            <include layout="@layout/include_iot_dashboard_ver_2" />
 
         </RelativeLayout>
 

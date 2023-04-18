@@ -24,6 +24,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.marcinorlowski.fonty.Fonty;
 import com.material.components.R;
 
 import java.util.ArrayList;
@@ -62,14 +63,17 @@ public class ActivityMainMenu extends AppCompatActivity {
         initToolbar();
         initComponent();
         subscribeMQTTTopics();
+
+        Fonty.setFonts(this);
     }
 
     private void initToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setHomeButtonEnabled(false);
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        actionBar = getSupportActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(false);
+//        actionBar.setHomeButtonEnabled(false);
+
         Tools.setSystemBarColorInt(this, getResources().getColor(R.color.darkHomeDark));
     }
 
