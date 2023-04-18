@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.app.iot_dashboard"
         minSdk 21
-        targetSdk 30
+        targetSdk 33
         versionCode 301
         versionName "3.0"
         multiDexEnabled true
@@ -32,6 +32,7 @@ android {
             excludes += ['META-INF/INDEX.LIST', 'META-INF/io.netty.versions.properties']
         }
     }
+    namespace 'com.material.components'
 }
 
 /* IMPORTANT :
@@ -82,4 +83,6 @@ dependencies {
     constraints {
         implementation('androidx.work:work-runtime:2.7.1')
     }
+
+    implementation 'com.github.MarcinOrlowski:fonty:3.1.5'
 }
