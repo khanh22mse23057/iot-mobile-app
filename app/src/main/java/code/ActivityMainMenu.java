@@ -1,9 +1,15 @@
 package code;
 
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.hardware.usb.UsbDeviceConnection;
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -24,9 +30,17 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.hoho.android.usbserial.driver.UsbSerialDriver;
+import com.hoho.android.usbserial.driver.UsbSerialPort;
+import com.hoho.android.usbserial.driver.UsbSerialProber;
+import com.hoho.android.usbserial.util.SerialInputOutputManager;
+import com.material.components.BuildConfig;
 import com.material.components.R;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Executors;
 
 import code.data.SharedPref;
 import code.room.AppDatabase;
@@ -34,7 +48,7 @@ import code.room.DAO;
 import code.utils.Tools;
 import it.beppi.tristatetogglebutton_library.TriStateToggleButton;
 
-public class ActivityMainMenu extends AppCompatActivity {
+public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.OnInitListener, SerialInputOutputManager.Listener {
 
 
     private SharedPref sharedPref;
@@ -52,6 +66,12 @@ public class ActivityMainMenu extends AppCompatActivity {
     private ImageView imgView;
     private MqttHelper mqttHelper;
 
+    private TextView txtStatus;
+    private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
+    private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
+    private int DATA_CHECKING = 0;
+    private TextToSpeech niceTTS;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +82,15 @@ public class ActivityMainMenu extends AppCompatActivity {
         initToolbar();
         initComponent();
         subscribeMQTTTopics();
+        initTextVoice();
+    }
+
+    private void initTextVoice() {
+        Intent checkData = new Intent();
+        //set it up to check for tts data
+        checkData.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        //start it so that it returns the result
+        startActivityForResult(checkData, DATA_CHECKING);
     }
 
     private void initToolbar() {
@@ -80,9 +109,9 @@ public class ActivityMainMenu extends AppCompatActivity {
         btnToggle1.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
-               int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
+                int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
                 Log.i(ActivityMainMenu.class.getName(), "btnToggle1 setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
-               mqttHelper.pushDataToTopic(MqttHelper.feed_btn_stage, status +"");
+                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_stage, status + "");
             }
         });
 
@@ -91,7 +120,7 @@ public class ActivityMainMenu extends AppCompatActivity {
             public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
                 int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
                 Log.i(ActivityMainMenu.class.getName(), "btnToggle1 setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
-                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_reset, status +"");
+                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_reset, status + "");
             }
         });
 
@@ -101,7 +130,7 @@ public class ActivityMainMenu extends AppCompatActivity {
 
         imgView = findViewById(R.id._id_image);
         txtMessage = findViewById(R.id._id_image_desc);
-
+        txtStatus = findViewById(R.id._id_tvStatus);
         //temperChart.setOnChartValueSelectedListener(this);
         // no description text
         temperChart.getDescription().setEnabled(false);
@@ -123,6 +152,118 @@ public class ActivityMainMenu extends AppCompatActivity {
         setData(10, 140.0f);
         setMeterHumidityValue(63.2f);
         setMeterTemper(24f);
+
+        openUART();
+    }
+
+
+    @Override
+    public void onInit(int initStatus) {
+        if (initStatus == TextToSpeech.SUCCESS) {
+            niceTTS.setLanguage(Locale.forLanguageTag("VI"));
+            talkToMe("Xin chào các bạn, tôi là hệ thống nhận diện khuôn mặt");
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //do they have the data
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == DATA_CHECKING) {
+            //yep - go ahead and instantiate
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
+                niceTTS = new TextToSpeech(this, this);
+                //no data, prompt to install it
+            else {
+                Intent promptInstall = new Intent();
+                promptInstall.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(promptInstall);
+            }
+        }
+    }
+
+    public void talkToMe(String sentence) {
+        String speakWords = sentence;
+        niceTTS.speak(speakWords, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    UsbSerialPort port;
+
+    private void connectSerial() {
+        try {
+// Find all available drivers from attached devices.
+            UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+            List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
+            if (availableDrivers.isEmpty()) {
+                return;
+            }
+
+            // Open a connection to the first available driver.
+            UsbSerialDriver driver = availableDrivers.get(0);
+            UsbDeviceConnection connection = manager.openDevice(driver.getDevice());
+            if (connection == null) {
+                // add UsbManager.requestPermission(driver.getDevice(), ..) handling here
+                return;
+            }
+
+            UsbSerialPort port = driver.getPorts().get(0); // Most devices have just one port (port 0)
+            port.open(connection);
+            port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+            port = port;
+        } catch (Exception ex) {
+
+        }
+
+    }
+
+    private void openUART() {
+        connectSerial();
+
+        UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
+
+        if (availableDrivers.isEmpty()) {
+            Log.d("UART", "UART is not available");
+            txtStatus.setText("UART is not available");
+
+        } else {
+            Log.d("UART", "UART is available");
+            txtStatus.setText("UART is available");
+
+            UsbSerialDriver driver = availableDrivers.get(0);
+            UsbDeviceConnection connection = manager.openDevice(driver.getDevice());
+            if (connection == null) {
+
+                PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(INTENT_ACTION_GRANT_USB), 0);
+                manager.requestPermission(driver.getDevice(), usbPermissionIntent);
+
+                manager.requestPermission(driver.getDevice(), PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0));
+
+
+                return;
+            } else {
+
+                port = driver.getPorts().get(0);
+                try {
+                    port.open(connection);
+                    //port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+                    port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+
+                    SerialInputOutputManager usbIoManager = new SerialInputOutputManager(port, null);
+/*                    Executors.newSingleThreadExecutor().submit(usbIoManager);*/
+                    Log.d("UART", "UART is openned");
+                    txtStatus.setText("UART is openned");
+
+                    usbIoManager = new SerialInputOutputManager(port, this);
+                    usbIoManager.start();
+
+
+                } catch (Exception e) {
+                    Log.d("UART", "There is error");
+                    txtStatus.setText("There is error");
+                }
+            }
+        }
+
     }
 
     private void subscribeMQTTTopics() {
@@ -169,6 +310,7 @@ public class ActivityMainMenu extends AppCompatActivity {
 
                 if (MqttHelper.feed_message.toLowerCase().equals(feedId)) {
                     txtMessage.setText(message);
+                    ProcessData(message);
                     return;
                 }
 
@@ -226,11 +368,6 @@ public class ActivityMainMenu extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-/*        int new_notif_count = dao.getNotificationUnreadCount();
-        if (new_notif_count != notification_count) {
-            notification_count = new_notif_count;
-            invalidateOptionsMenu();
-        }*/
     }
 
     @Override
@@ -371,5 +508,47 @@ public class ActivityMainMenu extends AppCompatActivity {
             // set data
             chart.setData(data);
         }
+    }
+
+
+    private String ProcessData(String data) {
+        if ("1".equals(data))
+            talkToMe("Xin chào " + "Khánh Phạm");
+
+        if("2".equals(data))
+            talkToMe("Xin chào " + "Minh Phong");
+
+        if ("3".equals(data))
+            talkToMe("Xin chào " + "Minh Hiếu");
+
+        if ("4".equals(data))
+            talkToMe("Xin chào " + "Tuấn Anh");
+
+        return data;
+    }
+
+    String buffer;
+    String name;
+    @Override
+    public void onNewData(byte[] data) {
+        Log.d("UART", "Received: " + new String(data));
+        buffer += new String(data);
+        if (buffer.contains("!") && buffer.contains("#")) {
+            String msg = buffer.replace("!", "");
+            msg = buffer.replace("#", "");
+            ProcessData(msg);
+            name = msg;
+            runOnUiThread(() -> { txtMessage.append(new String(data)); });
+
+            buffer = "";
+        } else {
+
+        }
+    }
+
+
+    @Override
+    public void onRunError(Exception e) {
+
     }
 }

@@ -20,7 +20,7 @@ public class MqttHelper {
 
     public static String serverUri = "io.adafruit.com";
     public static String clientId = "khanhpnp90";
-    public static String secretKey = "";
+    public static String secretKey = "aio_JtHk78bDz94cghKAdf9KSlryzJBx";
     public static String feed_btn_reset = "/feeds/btn-reset";
     public static String feed_btn_stage = "/feeds/btn-stage";
     public static String feed_message = "/feeds/message";
@@ -49,6 +49,7 @@ public class MqttHelper {
         String URL = String.format("tcp://%s:1883", serverUri);
         Log.i(ActivityMainMenu.class.getName(), URL);
         mqttAndroidClient = new MqttAndroidClient(mContext, URL, clientId);
+
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
