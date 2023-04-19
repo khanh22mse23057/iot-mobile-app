@@ -23,11 +23,10 @@ public interface API {
     @GET("api/news")
     Call<RespNews> getNews(@QueryMap Map<String, String> params);
 
-    @GET("/{username}/feeds/{feed_key}")
-    Call<JsonDataFeedModel.Root> getFeed(
-            @Header("X-AIO-Key") String ioKey,
+    @GET("{username}{feed_key}")
+    Call<ResponseBody> getFeed(
             @Path("username") String username,
-            @Path("feed_key") String feedKey
+            @Path(value = "feed_key", encoded = true) String feedKey
     );
 
 }

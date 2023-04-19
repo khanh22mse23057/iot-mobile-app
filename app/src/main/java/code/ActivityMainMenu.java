@@ -1,11 +1,8 @@
 package code;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +25,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.gson.Gson;
 import com.marcinorlowski.fonty.Fonty;
 import com.material.components.R;
 
@@ -102,27 +100,38 @@ public class ActivityMainMenu extends AppCompatActivity {
     }
 
     private void getFeed(String feedKey) {
-        String ioKey = MqttHelper.secretKey;
         String username = MqttHelper.clientId;
         API apiService = RestAdapter.createApiService();
-        Call<JsonDataFeedModel.Root> call = apiService.getFeed(ioKey, username, feedKey);
-        call.enqueue(new Callback<JsonDataFeedModel.Root>() {
+        Call<ResponseBody> call = apiService.getFeed(username, feedKey);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<JsonDataFeedModel.Root> call, Response<JsonDataFeedModel.Root> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
-                    String lastValue = response.body().details.data.last.value;
-                    String lastUpdateTime = response.body().details.data.last.updated_at;
 
-                    updateUI(feedKey, lastValue, lastUpdateTime);
+                    try {
+                        String json = response.body().string();
+                        Gson gson = new Gson();
+                        JsonDataFeedModel.Root root = gson.fromJson(json, JsonDataFeedModel.Root.class);
+                        // do something with the feed object
+                        String lastValue = root.last_value;
+                        String lastUpdateTime = root.created_at;
+
+                        updateUI(feedKey, lastValue, Tools.parseDateTimeFromMQTTServer(lastUpdateTime));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
                 } else {
                     // Handle error response
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonDataFeedModel.Root> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 // Handle failure
+                Log.e("error", t.getMessage());
             }
         });
     }
@@ -130,8 +139,16 @@ public class ActivityMainMenu extends AppCompatActivity {
     private void updateUI(String feedKey, String lastValue, String lastUpdateTime) {
         if (feedKey.equals(MqttHelper.feed_classroom_temperature)) {
             // update
+            tvTemp.setText(lastValue);
+            tvTempTime.setText(lastUpdateTime);
+
+            meterTemper.speedTo(Float.parseFloat(lastValue));
         } else if (feedKey.equals(MqttHelper.feed_classroom_humidity)) {
             // update
+            tvHum.setText(String.valueOf(Math.round(Float.parseFloat(lastValue))));
+            tvHumTime.setText(lastUpdateTime);
+
+            meterHumidity.speedTo(Float.parseFloat(lastValue));
         }
     }
 
@@ -146,35 +163,46 @@ public class ActivityMainMenu extends AppCompatActivity {
         adapterDataFeed = new AdapterDataFeed();
         rvDataFeed.setAdapter(adapterDataFeed);
 
-        new Timer().schedule(new TimerTask() {
+//        new Timer().schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                List<String> fakeDataValue = new ArrayList<>();
+//                fakeDataValue.add("unwear mask");
+//                fakeDataValue.add("wear mask");
+//                fakeDataValue.add("0");
+//                fakeDataValue.add("1");
+//
+//                List<String> fakeDataFeedId = new ArrayList<>();
+//                fakeDataFeedId.add("fan_state");
+//                fakeDataFeedId.add("led_state");
+//                fakeDataFeedId.add("alarm_state");
+//                fakeDataFeedId.add("message");
+//
+//                Random random = new Random();
+//                int index = random.nextInt(4);
+//
+//                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy:", new Locale("EN"));
+//                DataFeedItem dataFeedItem = new DataFeedItem(timeFormat.format(new Date()), fakeDataValue.get(index), fakeDataFeedId.get(index));
+//                runOnUiThread(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        adapterDataFeed.addData(dataFeedItem);
+//                        rvDataFeed.scrollToPosition(adapterDataFeed.getItemCount() - 1);
+//                    }
+//                });
+//            }
+//        }, 3000, 3000);
+    }
+
+    private void addRecordToLog(String value, String feedId) {
+        runOnUiThread(new TimerTask() {
             @Override
             public void run() {
-                List<String> fakeDataValue = new ArrayList<>();
-                fakeDataValue.add("unwear mask");
-                fakeDataValue.add("wear mask");
-                fakeDataValue.add("0");
-                fakeDataValue.add("1");
-
-                List<String> fakeDataFeedId = new ArrayList<>();
-                fakeDataFeedId.add("fan_state");
-                fakeDataFeedId.add("led_state");
-                fakeDataFeedId.add("alarm_state");
-                fakeDataFeedId.add("message");
-
-                Random random = new Random();
-                int index = random.nextInt(4);
-
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy:", new Locale("EN"));
-                DataFeedItem dataFeedItem = new DataFeedItem(timeFormat.format(new Date()), fakeDataValue.get(index), fakeDataFeedId.get(index));
-                runOnUiThread(new TimerTask() {
-                    @Override
-                    public void run() {
-                        adapterDataFeed.addData(dataFeedItem);
-                        rvDataFeed.scrollToPosition(adapterDataFeed.getItemCount() - 1);
-                    }
-                });
+                DataFeedItem dataFeedItem = new DataFeedItem(Tools.parseCurrentDateTime(), value, feedId);
+                adapterDataFeed.addData(dataFeedItem);
+                rvDataFeed.scrollToPosition(adapterDataFeed.getItemCount() - 1);
             }
-        }, 3000, 3000);
+        });
     }
 
     private void initDateTime() {
@@ -277,6 +305,10 @@ public class ActivityMainMenu extends AppCompatActivity {
                 String feedId = topic.replace(MqttHelper.clientId, "").toString().trim().toLowerCase();
                 Log.i(ActivityMainMenu.class.getName(), feedId + " ==> " + message);
                 TriStateToggleButton.ToggleStatus status;
+
+                // add to log
+                addRecordToLog(message, feedId);
+
                 if (MqttHelper.feed_btn_reset.toLowerCase().equals(feedId)) {
                     try {
 
@@ -307,7 +339,6 @@ public class ActivityMainMenu extends AppCompatActivity {
 //                        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 //                        imgView.setImageBitmap(decodedBitmap);
 
-
                         runOnUiThread(new TimerTask() {
                             @Override
                             public void run() {
@@ -329,8 +360,8 @@ public class ActivityMainMenu extends AppCompatActivity {
                 if (MqttHelper.feed_classroom_humidity.toLowerCase().equals(feedId)) {
                     try {
                         meterHumidity.speedTo(Float.parseFloat(message));
-                        tvHum.setText(message);
-//                        tvHumTime.setText();
+                        tvHum.setText(String.valueOf(Math.round(Float.parseFloat(message))));
+                        tvHumTime.setText(Tools.parseCurrentDateTime());
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -341,7 +372,7 @@ public class ActivityMainMenu extends AppCompatActivity {
                     try {
                         meterTemper.speedTo(Float.parseFloat(message));
                         tvTemp.setText(message);
-//                        tvTempTime.setText();
+                        tvTempTime.setText(Tools.parseCurrentDateTime());
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
