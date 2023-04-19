@@ -36,4 +36,12 @@ public class RestAdapter {
 
         return retrofit.create(API.class);
     }
+
+    public static API createApiService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://io.adafruit.com/api/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(API.class);
+    }
 }

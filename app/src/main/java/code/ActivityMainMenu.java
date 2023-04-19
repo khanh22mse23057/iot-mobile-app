@@ -4,10 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.anastr.speedviewlib.AwesomeSpeedometer;
 import com.github.mikephil.charting.charts.LineChart;
@@ -27,17 +31,35 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.marcinorlowski.fonty.Fonty;
 import com.material.components.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import code.adapter.AdapterDataFeed;
+import code.adapter.AdapterImage;
+import code.connection.API;
+import code.connection.RestAdapter;
 import code.data.SharedPref;
+import code.model.DataFeedItem;
+import code.model.JsonDataFeedModel;
 import code.room.AppDatabase;
 import code.room.DAO;
 import code.utils.Tools;
 import it.beppi.tristatetogglebutton_library.TriStateToggleButton;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityMainMenu extends AppCompatActivity {
 
 
+    public static boolean active = false;
     private SharedPref sharedPref;
     private ActionBar actionBar;
     private Toolbar toolbar;
@@ -52,6 +74,11 @@ public class ActivityMainMenu extends AppCompatActivity {
     private TextView txtMessage;
     private ImageView imgView;
     private MqttHelper mqttHelper;
+    private TextView tvHour, tvDate, tvTemp, tvHum, tvTempTime, tvHumTime;
+    private RecyclerView rvDataFeed, rvImage;
+    private AdapterDataFeed adapterDataFeed;
+    private AdapterImage adapterImage;
+    private long exitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +91,112 @@ public class ActivityMainMenu extends AppCompatActivity {
         initComponent();
         subscribeMQTTTopics();
 
+        initDateTime();
+        initLog();
+        initImage();
+
+        getFeed(MqttHelper.feed_classroom_temperature);
+        getFeed(MqttHelper.feed_classroom_humidity);
+
         Fonty.setFonts(this);
+    }
+
+    private void getFeed(String feedKey) {
+        String ioKey = MqttHelper.secretKey;
+        String username = MqttHelper.clientId;
+        API apiService = RestAdapter.createApiService();
+        Call<JsonDataFeedModel.Root> call = apiService.getFeed(ioKey, username, feedKey);
+        call.enqueue(new Callback<JsonDataFeedModel.Root>() {
+            @Override
+            public void onResponse(Call<JsonDataFeedModel.Root> call, Response<JsonDataFeedModel.Root> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    String lastValue = response.body().details.data.last.value;
+                    String lastUpdateTime = response.body().details.data.last.updated_at;
+
+                    updateUI(feedKey, lastValue, lastUpdateTime);
+                } else {
+                    // Handle error response
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonDataFeedModel.Root> call, Throwable t) {
+                // Handle failure
+            }
+        });
+    }
+
+    private void updateUI(String feedKey, String lastValue, String lastUpdateTime) {
+        if (feedKey.equals(MqttHelper.feed_classroom_temperature)) {
+            // update
+        } else if (feedKey.equals(MqttHelper.feed_classroom_humidity)) {
+            // update
+        }
+    }
+
+    private void initImage() {
+        rvImage.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        adapterImage = new AdapterImage();
+        rvImage.setAdapter(adapterImage);
+    }
+
+    private void initLog() {
+        rvDataFeed.setLayoutManager(new LinearLayoutManager(this));
+        adapterDataFeed = new AdapterDataFeed();
+        rvDataFeed.setAdapter(adapterDataFeed);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                List<String> fakeDataValue = new ArrayList<>();
+                fakeDataValue.add("unwear mask");
+                fakeDataValue.add("wear mask");
+                fakeDataValue.add("0");
+                fakeDataValue.add("1");
+
+                List<String> fakeDataFeedId = new ArrayList<>();
+                fakeDataFeedId.add("fan_state");
+                fakeDataFeedId.add("led_state");
+                fakeDataFeedId.add("alarm_state");
+                fakeDataFeedId.add("message");
+
+                Random random = new Random();
+                int index = random.nextInt(4);
+
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy:", new Locale("EN"));
+                DataFeedItem dataFeedItem = new DataFeedItem(timeFormat.format(new Date()), fakeDataValue.get(index), fakeDataFeedId.get(index));
+                runOnUiThread(new TimerTask() {
+                    @Override
+                    public void run() {
+                        adapterDataFeed.addData(dataFeedItem);
+                        rvDataFeed.scrollToPosition(adapterDataFeed.getItemCount() - 1);
+                    }
+                });
+            }
+        }, 3000, 3000);
+    }
+
+    private void initDateTime() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", new Locale("EN"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM yyyy", new Locale("EN"));
+
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                String currentTime = timeFormat.format(new Date());
+                tvHour.setText(currentTime);
+
+                String currentDate = dateFormat.format(new Date());
+                tvDate.setText(currentDate);
+
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+// Bắt đầu cập nhật TextView
+        handler.post(runnable);
     }
 
     private void initToolbar() {
@@ -78,15 +210,23 @@ public class ActivityMainMenu extends AppCompatActivity {
     }
 
     private void initComponent() {
+        rvImage = findViewById(R.id.rvImage);
+        rvDataFeed = findViewById(R.id.rvLog);
+        tvHour = findViewById(R.id.tvHour);
+        tvDate = findViewById(R.id.tvDate);
+        tvTemp = findViewById(R.id.tvTemp);
+        tvHum = findViewById(R.id.tvHum);
+        tvTempTime = findViewById(R.id.tvTimeTemp);
+        tvHumTime = findViewById(R.id.tvTimeHum);
         btnToggle1 = findViewById(R.id._id_btnToggle1);
         btnToggle2 = findViewById(R.id._id_btnToggle2);
 
         btnToggle1.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
-               int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
+                int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
                 Log.i(ActivityMainMenu.class.getName(), "btnToggle1 setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
-               mqttHelper.pushDataToTopic(MqttHelper.feed_btn_stage, status +"");
+                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_stage, status + "");
             }
         });
 
@@ -95,7 +235,7 @@ public class ActivityMainMenu extends AppCompatActivity {
             public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
                 int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
                 Log.i(ActivityMainMenu.class.getName(), "btnToggle1 setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
-                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_reset, status +"");
+                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_reset, status + "");
             }
         });
 
@@ -161,10 +301,20 @@ public class ActivityMainMenu extends AppCompatActivity {
 
                 if (MqttHelper.feed_imask.toLowerCase().equals(feedId)) {
                     try {
-                        byte[] decodedString = Base64.decode(message, Base64.DEFAULT);
+
+//                        byte[] decodedString = Base64.decode(message, Base64.DEFAULT);
                         // Convert the byte array to a Bitmap
-                        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        imgView.setImageBitmap(decodedBitmap);
+//                        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//                        imgView.setImageBitmap(decodedBitmap);
+
+
+                        runOnUiThread(new TimerTask() {
+                            @Override
+                            public void run() {
+                                adapterImage.addImage(message);
+                                rvImage.scrollToPosition(0);
+                            }
+                        });
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -179,6 +329,8 @@ public class ActivityMainMenu extends AppCompatActivity {
                 if (MqttHelper.feed_classroom_humidity.toLowerCase().equals(feedId)) {
                     try {
                         meterHumidity.speedTo(Float.parseFloat(message));
+                        tvHum.setText(message);
+//                        tvHumTime.setText();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -188,6 +340,8 @@ public class ActivityMainMenu extends AppCompatActivity {
                 if (MqttHelper.feed_classroom_temperature.toLowerCase().equals(feedId)) {
                     try {
                         meterTemper.speedTo(Float.parseFloat(message));
+                        tvTemp.setText(message);
+//                        tvTempTime.setText();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -217,7 +371,6 @@ public class ActivityMainMenu extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int item_id = item.getItemId();
@@ -235,6 +388,17 @@ public class ActivityMainMenu extends AppCompatActivity {
             notification_count = new_notif_count;
             invalidateOptionsMenu();
         }*/
+        int uiOptions =
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+
+        if (getWindow().getDecorView().getSystemUiVisibility() != uiOptions) {
+            getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+        }
     }
 
     @Override
@@ -247,8 +411,6 @@ public class ActivityMainMenu extends AppCompatActivity {
         doExitApp();
     }
 
-    private long exitTime = 0;
-
     public void doExitApp() {
         if ((System.currentTimeMillis() - exitTime) > 2000) {
             Toast.makeText(this, "Press again to exit app", Toast.LENGTH_SHORT).show();
@@ -257,8 +419,6 @@ public class ActivityMainMenu extends AppCompatActivity {
             finish();
         }
     }
-
-    public static boolean active = false;
 
     @Override
     public void onStart() {
