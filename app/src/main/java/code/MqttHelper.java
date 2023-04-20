@@ -21,14 +21,15 @@ public class MqttHelper {
     public static String serverUri = "io.adafruit.com";
     public static String clientId = "khanhpnp90";
     public static String secretKey = "";
-    public static String feed_btn_reset = "/feeds/btn-reset";
-    public static String feed_btn_stage = "/feeds/btn-stage";
+    public static String feed_btn_shutdown = "/feeds/shutdown";
+    public static String feed_alarm_state = "/feeds/alarm_state";
     public static String feed_message = "/feeds/message";
-    public static String feed_classroom_humidity = "/feeds/classroom-humidity";
-    public static String feed_classroom_temperature = "/feeds/classroom-temperature";
-    public static String feed_imask = "/feeds/imask";
-    public static String feed_slider_bar = "/feeds/slider-bar";
-
+    public static String feed_humidity_meter = "/feeds/humidity_meter";
+    public static String feed_temperature_meter = "/feeds/temperature_meter";
+    public static String feed_image = "/feeds/image";
+    public static String feed_fan_state = "/feeds/fan_state";
+    public static String feed_led_state = "/feeds/led_state";
+    public static String feed_logs = "/feeds/logs";
     public static String publishTopic = "exampleAndroidPublishTopic";
     public static String publishMessage = "Hello World!";
 
@@ -102,13 +103,18 @@ public class MqttHelper {
                     disconnectedBufferOptions.setDeleteOldestMessages(false);
                     mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
 
-                    subscribeToTopic(feed_btn_reset);
-                    subscribeToTopic(feed_btn_stage);
-                    subscribeToTopic(feed_classroom_humidity);
-                    subscribeToTopic(feed_classroom_temperature);
+                    subscribeToTopic(feed_btn_shutdown);
+
+                    subscribeToTopic(feed_humidity_meter);
+                    subscribeToTopic(feed_temperature_meter);
+
                     subscribeToTopic(feed_message);
-                    subscribeToTopic(feed_imask);
-                    subscribeToTopic(feed_slider_bar);
+                    subscribeToTopic(feed_image);
+                    subscribeToTopic(feed_fan_state);
+
+                    subscribeToTopic(feed_led_state);
+                    subscribeToTopic(feed_fan_state);
+                    subscribeToTopic(feed_alarm_state);
 
                 }
 

@@ -12,65 +12,32 @@
         android:id="@+id/left"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/right"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bgImg"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
             android:background="@drawable/round_shape_app"
             android:padding="@dimen/spacing_small"
-            android:layout_marginStart="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:layout_marginTop="@dimen/spacing_small"
 
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.3"
-            >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="horizontal"
                 android:padding="@dimen/spacing_large"
-                />
-
-<!--            <ImageView-->
-<!--                android:id="@+id/_id_image"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:scaleType="centerInside"-->
-<!--                android:src="@drawable/image_7"-->
-<!--                android:layout_marginStart="10dp"-->
-<!--                android:layout_marginTop="5dp"-->
-<!--                android:layout_marginBottom="5dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintEnd_toStartOf="@id/_id_image2"-->
-<!--                />-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/_id_image2"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:scaleType="centerInside"-->
-<!--                android:src="@drawable/image_7"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginTop="5dp"-->
-<!--                android:layout_marginBottom="5dp"-->
-<!--                android:layout_marginEnd="10dp"-->
-
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toEndOf="@id/_id_image"-->
-<!--                />-->
-
+                android:scrollbars="horizontal" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -80,9 +47,9 @@
             android:layout_height="0dp"
             android:layout_margin="@dimen/spacing_small"
             android:background="@drawable/round_shape_app"
-            app:layout_constraintTop_toBottomOf="@id/bgImg"
+            android:padding="@dimen/spacing_small"
             app:layout_constraintHeight_percent="0.43"
-            android:padding="@dimen/spacing_small">
+            app:layout_constraintTop_toBottomOf="@id/bgImg">
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/_id_chart"
@@ -93,23 +60,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:background="@drawable/round_shape_app"
-
-            app:layout_constraintTop_toBottomOf="@id/bgChart"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintTop_toBottomOf="@id/bgChart">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvLog"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="vertical"
                 android:padding="@dimen/spacing_large"
-                />
+                android:scrollbars="vertical" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -136,29 +100,27 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/spacing_small"
+                android:layout_marginBottom="@dimen/spacing_small"
                 android:background="@drawable/round_shape_app"
                 android:padding="@dimen/spacing_small"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginEnd="@dimen/spacing_small"
 
-                app:layout_constraintBottom_toBottomOf="@id/btnReset"
-                app:layout_constraintEnd_toStartOf="@id/btnReset"
+                app:layout_constraintBottom_toBottomOf="@id/_id_btnReset"
+                app:layout_constraintEnd_toStartOf="@id/_id_btnReset"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/btnReset">
+                app:layout_constraintTop_toTopOf="@id/_id_btnReset">
 
                 <TextView
                     android:id="@+id/tvHour"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
                     android:text="15:26"
-                    android:textColor="@color/white"
+                    android:textColor="@color/yellow_600"
                     android:textSize="25sp"
 
-                    app:layout_constraintEnd_toStartOf="@id/tvDate"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tvDate"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -166,25 +128,22 @@
                     android:id="@+id/tvDate"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-
                     android:gravity="center"
+                    android:paddingTop="@dimen/spacing_medium"
+                    android:paddingEnd="@dimen/spacing_medium"
                     android:text="Wend 19 Apr 2023"
                     android:textColor="@color/white"
-
                     android:textStyle="bold"
-                    android:paddingEnd="@dimen/spacing_medium"
-                    android:paddingTop="@dimen/spacing_medium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tvHour" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
-                android:id="@+id/btnReset"
+                android:id="@+id/_id_btnReset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:background="@color/orange_600"
                 android:text="Reset"
-                android:background="@android:color/holo_orange_dark"
                 android:textAllCaps="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -193,18 +152,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@drawable/round_shape_app"
-
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnReset">
+                app:layout_constraintTop_toBottomOf="@id/_id_btnReset">
 
                 <LinearLayout
                     android:id="@+id/bgAlarm"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="5dp"
-
+                    android:padding="@dimen/spacing_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/bgFan"
                     app:layout_constraintStart_toStartOf="parent"
@@ -213,17 +169,17 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:gravity="center"
                         android:text="Alarm State"
+                        android:layout_marginBottom="@dimen/spacing_small"
                         android:textColor="@color/white" />
 
                     <it.beppi.tristatetogglebutton_library.TriStateToggleButton
-                        android:id="@+id/_id_btnToggle1"
+                        android:id="@+id/_id_alarm_state"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minHeight="50dp"
                         android:layout_gravity="center"
-                        android:layout_margin="@dimen/spacing_mlarge"
                         app:tbDefaultStatus="off"
                         app:tbIsMidSelectable="false"
                         app:tbOffColor="@color/red_700" />
@@ -235,8 +191,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="5dp"
+                    android:padding="@dimen/spacing_medium"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/bgLed"
@@ -246,17 +201,17 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:gravity="center"
+                        android:layout_marginBottom="@dimen/spacing_small"
                         android:text="Fan State"
                         android:textColor="@color/white" />
 
                     <it.beppi.tristatetogglebutton_library.TriStateToggleButton
-                        android:id="@+id/_id_btnToggle2"
+                        android:id="@+id/_id_fan_state"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="@dimen/spacing_mlarge"
+                        android:minHeight="30dp"
                         app:tbDefaultStatus="on"
                         app:tbIsMidSelectable="false"
                         app:tbOffColor="@color/grey_60" />
@@ -268,9 +223,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="5dp"
-
+                    android:padding="@dimen/spacing_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/bgFan"
@@ -279,17 +232,17 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:gravity="center"
                         android:text="Led State"
+                        android:layout_marginBottom="@dimen/spacing_small"
                         android:textColor="@color/white" />
 
                     <it.beppi.tristatetogglebutton_library.TriStateToggleButton
-                        android:id="@+id/_id_btnToggle3"
+                        android:id="@+id/_id_led_state"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:minHeight="30dp"
                         android:layout_gravity="center"
-                        android:layout_margin="@dimen/spacing_mlarge"
                         app:tbDefaultStatus="on"
                         app:tbIsMidSelectable="false"
                         app:tbOffColor="@color/grey_60" />
@@ -304,13 +257,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-
-            app:layout_constraintBottom_toTopOf="@id/bottom_right"
-            app:layout_constraintTop_toBottomOf="@id/top_right"
-            android:background="@drawable/round_shape_app"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginBottom="@dimen/spacing_small"
-            >
+            android:background="@drawable/round_shape_app"
+            app:layout_constraintBottom_toTopOf="@id/bottom_right"
+            app:layout_constraintTop_toBottomOf="@id/top_right">
 
             <LinearLayout
                 android:id="@+id/bgTemp"
@@ -328,28 +279,26 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Last Temperature"
-                    android:textSize="15sp"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
 
                 <FrameLayout
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/temperature"
-                    >
+                    android:padding="@dimen/spacing_medium"
+                    android:background="@drawable/temperature">
 
                     <TextView
                         android:id="@+id/tvTemp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:gravity="center"
                         android:padding="7dp"
                         android:text="23.5"
-                        android:layout_gravity="center"
                         android:textColor="#FFFF99"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -386,27 +335,23 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Last Humidity"
-                    android:textSize="15sp"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
 
                 <FrameLayout
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/humidity"
-                    >
+                    android:padding="@dimen/spacing_medium"
+                    android:background="@drawable/humidity">
 
                     <TextView
                         android:id="@+id/tvHum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
+                        android:layout_gravity="center_vertical"
                         android:gravity="center"
                         android:padding="7dp"
                         android:text="59"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginTop="@dimen/spacing_mxlarge"
-                        android:layout_marginStart="@dimen/spacing_middle"
                         android:textColor="#004E98"
                         android:textSize="20dp"
                         android:textStyle="bold" />

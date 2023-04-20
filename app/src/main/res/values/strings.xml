@@ -23,7 +23,4 @@
     <string name="default_notification_channel_id">Default</string>
     <string name="webview_loading">Load Content... </string>
 
-    <string name="failed_text">Something went wrong\ntap to retry</string>
-    <string name="no_internet_text">No internet connection\ntap to retry</string>
-
 </resources>

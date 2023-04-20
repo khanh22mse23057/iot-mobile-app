@@ -1,16 +1,22 @@
 package code;
 
+import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
+
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,10 +38,7 @@ import com.material.components.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-import java.util.Timer;
 import java.util.TimerTask;
 
 import code.adapter.AdapterDataFeed;
@@ -64,8 +67,9 @@ public class ActivityMainMenu extends AppCompatActivity {
     private Integer news_page = 20;
     private int notification_count = -1;
     private DAO dao;
-    private TriStateToggleButton btnToggle1;
-    private TriStateToggleButton btnToggle2;
+    private TriStateToggleButton _btn_FanControl;
+    private TriStateToggleButton _btn_LedControl;
+    private TriStateToggleButton _btn_AlarmControl;
     private AwesomeSpeedometer meterTemper;
     private AwesomeSpeedometer meterHumidity;
     private LineChart temperChart;
@@ -73,10 +77,12 @@ public class ActivityMainMenu extends AppCompatActivity {
     private ImageView imgView;
     private MqttHelper mqttHelper;
     private TextView tvHour, tvDate, tvTemp, tvHum, tvTempTime, tvHumTime;
+    private Button _btnReset;
     private RecyclerView rvDataFeed, rvImage;
     private AdapterDataFeed adapterDataFeed;
     private AdapterImage adapterImage;
     private long exitTime = 0;
+    private static int ResetState = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,32 +91,48 @@ public class ActivityMainMenu extends AppCompatActivity {
         sharedPref = new SharedPref(this);
         dao = AppDatabase.getDb(this).getDAO();
 
-        initToolbar();
-        initComponent();
-        subscribeMQTTTopics();
+        try {
+            initToolbar();
+            initComponent();
+            subscribeMQTTTopics();
 
-        initDateTime();
-        initLog();
-        initImage();
+            initDateTime();
+            initLog();
+            initImage();
 
-        getFeed(MqttHelper.feed_classroom_temperature);
-        getFeed(MqttHelper.feed_classroom_humidity);
+            Fonty.setFonts(this);
+        }catch (Exception ex) {
+            Log.e(TAG, "onCreate: ", ex);
+        }
+    }
 
-        Fonty.setFonts(this);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+        try {
+            getFeed(MqttHelper.feed_temperature_meter);
+            getFeed(MqttHelper.feed_humidity_meter);
+            getFeed(MqttHelper.feed_image);
+        }
+        catch (Exception e) {}
+
+        return super.onCreateView(name, context, attrs);
     }
 
     private void getFeed(String feedKey) {
         String username = MqttHelper.clientId;
         API apiService = RestAdapter.createApiService();
-        Call<ResponseBody> call = apiService.getFeed(username, feedKey);
+        Call<ResponseBody> call = apiService.getFeed(username, feedKey, MqttHelper.secretKey);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
+
                     assert response.body() != null;
 
                     try {
                         String json = response.body().string();
+                        Log.i(TAG, "onResponse: " + json);
                         Gson gson = new Gson();
                         JsonDataFeedModel.Root root = gson.fromJson(json, JsonDataFeedModel.Root.class);
                         // do something with the feed object
@@ -137,18 +159,44 @@ public class ActivityMainMenu extends AppCompatActivity {
     }
 
     private void updateUI(String feedKey, String lastValue, String lastUpdateTime) {
-        if (feedKey.equals(MqttHelper.feed_classroom_temperature)) {
+        if (feedKey.equals(MqttHelper.feed_temperature_meter)) {
             // update
             tvTemp.setText(lastValue);
             tvTempTime.setText(lastUpdateTime);
 
             meterTemper.speedTo(Float.parseFloat(lastValue));
-        } else if (feedKey.equals(MqttHelper.feed_classroom_humidity)) {
+
+            return;
+        }
+
+        if (feedKey.equals(MqttHelper.feed_humidity_meter)) {
             // update
             tvHum.setText(String.valueOf(Math.round(Float.parseFloat(lastValue))));
             tvHumTime.setText(lastUpdateTime);
 
             meterHumidity.speedTo(Float.parseFloat(lastValue));
+            return;
+        }
+
+        if (feedKey.equals(MqttHelper.feed_image)) {
+            // update
+            if(lastValue.length() > 0) {
+                runOnUiThread(new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            adapterImage.addImage(lastValue);
+                            rvImage.scrollToPosition(0);
+                        }
+                        catch (Exception e) {
+                            Log.e(TAG, "run: set Image", e);
+                        }
+
+                    }
+                });
+            }
+
+            return;
         }
     }
 
@@ -162,43 +210,17 @@ public class ActivityMainMenu extends AppCompatActivity {
         rvDataFeed.setLayoutManager(new LinearLayoutManager(this));
         adapterDataFeed = new AdapterDataFeed();
         rvDataFeed.setAdapter(adapterDataFeed);
-
-//        new Timer().schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                List<String> fakeDataValue = new ArrayList<>();
-//                fakeDataValue.add("unwear mask");
-//                fakeDataValue.add("wear mask");
-//                fakeDataValue.add("0");
-//                fakeDataValue.add("1");
-//
-//                List<String> fakeDataFeedId = new ArrayList<>();
-//                fakeDataFeedId.add("fan_state");
-//                fakeDataFeedId.add("led_state");
-//                fakeDataFeedId.add("alarm_state");
-//                fakeDataFeedId.add("message");
-//
-//                Random random = new Random();
-//                int index = random.nextInt(4);
-//
-//                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy:", new Locale("EN"));
-//                DataFeedItem dataFeedItem = new DataFeedItem(timeFormat.format(new Date()), fakeDataValue.get(index), fakeDataFeedId.get(index));
-//                runOnUiThread(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        adapterDataFeed.addData(dataFeedItem);
-//                        rvDataFeed.scrollToPosition(adapterDataFeed.getItemCount() - 1);
-//                    }
-//                });
-//            }
-//        }, 3000, 3000);
     }
 
     private void addRecordToLog(String value, String feedId) {
         runOnUiThread(new TimerTask() {
             @Override
             public void run() {
-                DataFeedItem dataFeedItem = new DataFeedItem(Tools.parseCurrentDateTime(), value, feedId);
+                String data = value;
+               if(MqttHelper.feed_image.equals(feedId)) {
+                   data = "<< Base64 Image >>";
+                }
+                DataFeedItem dataFeedItem = new DataFeedItem(Tools.parseCurrentDateTime(), data, feedId);
                 adapterDataFeed.addData(dataFeedItem);
                 rvDataFeed.scrollToPosition(adapterDataFeed.getItemCount() - 1);
             }
@@ -228,12 +250,6 @@ public class ActivityMainMenu extends AppCompatActivity {
     }
 
     private void initToolbar() {
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        actionBar = getSupportActionBar();
-//        actionBar.setDisplayHomeAsUpEnabled(false);
-//        actionBar.setHomeButtonEnabled(false);
-
         Tools.setSystemBarColorInt(this, getResources().getColor(R.color.darkHomeDark));
     }
 
@@ -246,24 +262,56 @@ public class ActivityMainMenu extends AppCompatActivity {
         tvHum = findViewById(R.id.tvHum);
         tvTempTime = findViewById(R.id.tvTimeTemp);
         tvHumTime = findViewById(R.id.tvTimeHum);
-        btnToggle1 = findViewById(R.id._id_btnToggle1);
-        btnToggle2 = findViewById(R.id._id_btnToggle2);
-
-        btnToggle1.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
+        _btn_AlarmControl = findViewById(R.id._id_alarm_state);
+        _btn_LedControl = findViewById(R.id._id_led_state);
+        _btn_FanControl = findViewById(R.id._id_led_state);
+        _btnReset = findViewById(R.id._id_btnReset);
+        _btn_FanControl.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
                 int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
-                Log.i(ActivityMainMenu.class.getName(), "btnToggle1 setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
-                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_stage, status + "");
+                Log.i(ActivityMainMenu.class.getName(), "_btn_FanControl setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
+                mqttHelper.pushDataToTopic(MqttHelper.feed_fan_state, status + "");
             }
         });
 
-        btnToggle2.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
+        _btn_LedControl.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
                 int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
-                Log.i(ActivityMainMenu.class.getName(), "btnToggle1 setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
-                mqttHelper.pushDataToTopic(MqttHelper.feed_btn_reset, status + "");
+                Log.i(ActivityMainMenu.class.getName(), "_btn_LedControl setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
+                mqttHelper.pushDataToTopic(MqttHelper.feed_led_state, status + "");
+            }
+        });
+
+        _btn_AlarmControl.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
+                int status = toggleStatus == TriStateToggleButton.ToggleStatus.on ? 1 : 0;
+                Log.i(ActivityMainMenu.class.getName(), "_btn_AlarmControl setOnToggleChanged " + " ==> " + toggleIntValue + ":" + status);
+
+                mqttHelper.pushDataToTopic(MqttHelper.feed_alarm_state, status + "");
+            }
+        });
+
+        _btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mqttHelper.pushDataToTopic(MqttHelper.feed_alarm_state, ResetState + "");
+
+                if(ResetState == 0) {
+                    _btnReset.setText("Start");
+                    _btnReset.setBackground(getDrawable(R.color.green_600));
+                    ResetState = 1;
+                    return;
+                }
+
+                if(ResetState == 1) {
+                    _btnReset.setText("Reset");
+                    _btnReset.setBackground(getDrawable(R.color.orange_600));
+                    ResetState = 1;
+                    return;
+                }
             }
         });
 
@@ -309,10 +357,10 @@ public class ActivityMainMenu extends AppCompatActivity {
                 // add to log
                 addRecordToLog(message, feedId);
 
-                if (MqttHelper.feed_btn_reset.toLowerCase().equals(feedId)) {
+                if (MqttHelper.feed_fan_state.toLowerCase().equals(feedId)) {
                     try {
 
-                        btnToggle1.setToggleStatus("0".equals(message) == false);
+                        _btn_FanControl.setToggleStatus("0".equals(message) == false);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -320,10 +368,10 @@ public class ActivityMainMenu extends AppCompatActivity {
                     return;
                 }
 
-                if (MqttHelper.feed_btn_stage.toLowerCase().equals(feedId)) {
+                if (MqttHelper.feed_led_state.toLowerCase().equals(feedId)) {
                     try {
-                        status = Boolean.parseBoolean(message) ? TriStateToggleButton.ToggleStatus.on : TriStateToggleButton.ToggleStatus.off;
-                        btnToggle2.setToggleStatus("0".equals(message) == false);
+                        /*status = Boolean.parseBoolean(message) ? TriStateToggleButton.ToggleStatus.on : TriStateToggleButton.ToggleStatus.off;*/
+                        _btn_LedControl.setToggleStatus("0".equals(message) == false);
 
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -331,7 +379,18 @@ public class ActivityMainMenu extends AppCompatActivity {
                     return;
                 }
 
-                if (MqttHelper.feed_imask.toLowerCase().equals(feedId)) {
+                if (MqttHelper.feed_alarm_state.toLowerCase().equals(feedId)) {
+                    try {
+                        /*status = Boolean.parseBoolean(message) ? TriStateToggleButton.ToggleStatus.on : TriStateToggleButton.ToggleStatus.off;*/
+                        _btn_AlarmControl.setToggleStatus("0".equals(message) == false);
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    return;
+                }
+
+                if (MqttHelper.feed_image.toLowerCase().equals(feedId)) {
                     try {
 
 //                        byte[] decodedString = Base64.decode(message, Base64.DEFAULT);
@@ -357,7 +416,7 @@ public class ActivityMainMenu extends AppCompatActivity {
                     return;
                 }
 
-                if (MqttHelper.feed_classroom_humidity.toLowerCase().equals(feedId)) {
+                if (MqttHelper.feed_humidity_meter.toLowerCase().equals(feedId)) {
                     try {
                         meterHumidity.speedTo(Float.parseFloat(message));
                         tvHum.setText(String.valueOf(Math.round(Float.parseFloat(message))));
@@ -368,7 +427,7 @@ public class ActivityMainMenu extends AppCompatActivity {
                     return;
                 }
 
-                if (MqttHelper.feed_classroom_temperature.toLowerCase().equals(feedId)) {
+                if (MqttHelper.feed_temperature_meter.toLowerCase().equals(feedId)) {
                     try {
                         meterTemper.speedTo(Float.parseFloat(message));
                         tvTemp.setText(message);
