@@ -187,6 +187,7 @@ public class ActivityMainMenu extends AppCompatActivity {
                         try {
                             adapterImage.addImage(lastValue);
                             rvImage.scrollToPosition(0);
+                            adapterImage.notifyDataSetChanged();
                         }
                         catch (Exception e) {
                             Log.e(TAG, "run: set Image", e);
