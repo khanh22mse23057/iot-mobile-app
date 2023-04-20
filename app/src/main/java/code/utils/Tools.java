@@ -69,12 +69,31 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class Tools {
 
 
     private static AppUpdateManager appUpdateManager;
     private static InstallStateUpdatedListener installStateUpdatedListener;
+
+    public static String parseDateTimeFromMQTTServer(String dateString) throws ParseException {
+        // Parse the date string to a Date object
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", new Locale("EN"));
+        inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = inputFormat.parse(dateString);
+
+//      Format the date to the desired format
+        SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy", new Locale("EN"));
+        assert date != null;
+
+        return outputFormat.format(date);
+    }
+
+    public static String parseCurrentDateTime() {
+        SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy", new Locale("EN"));
+        return outputFormat.format(new Date());
+    }
 
     public static void setSystemBarColor(Activity act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
