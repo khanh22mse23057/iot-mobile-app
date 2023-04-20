@@ -3,9 +3,11 @@ package code;
 import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
@@ -32,7 +34,9 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.gson.Gson;
+import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import com.marcinorlowski.fonty.Fonty;
+import com.material.components.BuildConfig;
 import com.material.components.R;
 
 import java.text.SimpleDateFormat;
@@ -57,7 +61,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActivityMainMenu extends AppCompatActivity {
+public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.OnInitListener, SerialInputOutputManager.Listener{
 
 
     public static boolean active = false;
@@ -83,6 +87,12 @@ public class ActivityMainMenu extends AppCompatActivity {
     private AdapterImage adapterImage;
     private long exitTime = 0;
     private static int ResetState = 0;
+    private static boolean isLoaded = false;
+
+    private static final String ACTION_USB_PERMISSION = "com.android.recipes.USB_PERMISSION";
+    private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
+    private int DATA_CHECKING = 0;
+    private TextToSpeech niceTTS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +105,7 @@ public class ActivityMainMenu extends AppCompatActivity {
             initToolbar();
             initComponent();
             subscribeMQTTTopics();
-
+            initTextVoice();
             initDateTime();
             initLog();
             initImage();
@@ -110,13 +120,31 @@ public class ActivityMainMenu extends AppCompatActivity {
     @Override
     public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
         try {
-            getFeed(MqttHelper.feed_temperature_meter);
-            getFeed(MqttHelper.feed_humidity_meter);
-            getFeed(MqttHelper.feed_image);
+            if(isLoaded == false) {
+                getFeed(MqttHelper.feed_temperature_meter);
+                getFeed(MqttHelper.feed_humidity_meter);
+                getFeed(MqttHelper.feed_image);
+
+                isLoaded = true;
+            }
+
         }
         catch (Exception e) {}
 
         return super.onCreateView(name, context, attrs);
+    }
+
+    public void talkToMe(String sentence) {
+        String speakWords = sentence;
+        niceTTS.speak(speakWords, TextToSpeech.QUEUE_FLUSH, null);
+
+    }
+        private void initTextVoice() {
+        Intent checkData = new Intent();
+        //set it up to check for tts data
+        checkData.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        //start it so that it returns the result
+        startActivityForResult(checkData, DATA_CHECKING);
     }
 
     private void getFeed(String feedKey) {
@@ -267,6 +295,7 @@ public class ActivityMainMenu extends AppCompatActivity {
         _btn_LedControl = findViewById(R.id._id_led_state);
         _btn_FanControl = findViewById(R.id._id_led_state);
         _btnReset = findViewById(R.id._id_btnReset);
+
         _btn_FanControl.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(TriStateToggleButton.ToggleStatus toggleStatus, boolean booleanToggleStatus, int toggleIntValue) {
@@ -404,6 +433,7 @@ public class ActivityMainMenu extends AppCompatActivity {
                             public void run() {
                                 adapterImage.addImage(message);
                                 rvImage.scrollToPosition(0);
+                                adapterImage.notifyDataSetChanged();
                             }
                         });
                     } catch (Exception ex) {
@@ -414,6 +444,21 @@ public class ActivityMainMenu extends AppCompatActivity {
 
                 if (MqttHelper.feed_message.toLowerCase().equals(feedId)) {
                     txtMessage.setText(message);
+                    return;
+                }
+
+                if (MqttHelper.feed_logs.toLowerCase().equals(feedId)) {
+                    String json = message.toString();
+                    Log.i(TAG, "onResponse: " + json);
+                    Gson gson = new Gson();
+                    JsonDataFeedModel.Root root = gson.fromJson(json, JsonDataFeedModel.Root.class);
+                    // do something with the feed object
+                    String key = root.key;
+                    String value = root.name;
+
+                    if("ObjectDetection".equals(key)) {
+                        talkToMe("Xin chào " + value);
+                    }
                     return;
                 }
 
@@ -625,6 +670,38 @@ public class ActivityMainMenu extends AppCompatActivity {
 
             // set data
             chart.setData(data);
+        }
+    }
+
+
+    @Override
+    public void onInit(int status) {
+
+    }
+
+    @Override
+    public void onNewData(byte[] data) {
+
+    }
+
+    @Override
+    public void onRunError(Exception e) {
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //do they have the data
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == DATA_CHECKING) {
+            //yep - go ahead and instantiate
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
+                niceTTS = new TextToSpeech(this, this);
+                //no data, prompt to install it
+            else {
+                Intent promptInstall = new Intent();
+                promptInstall.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(promptInstall);
+            }
         }
     }
 }
