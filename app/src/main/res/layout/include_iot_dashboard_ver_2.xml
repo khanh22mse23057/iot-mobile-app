@@ -177,9 +177,9 @@
                     <it.beppi.tristatetogglebutton_library.TriStateToggleButton
                         android:id="@+id/_id_alarm_state"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:minHeight="50dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_margin="@dimen/spacing_smlarge"
                         app:tbDefaultStatus="off"
                         app:tbIsMidSelectable="false"
                         app:tbOffColor="@color/red_700" />
@@ -210,8 +210,8 @@
                         android:id="@+id/_id_fan_state"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spacing_smlarge"
                         android:layout_gravity="center"
-                        android:minHeight="30dp"
                         app:tbDefaultStatus="on"
                         app:tbIsMidSelectable="false"
                         app:tbOffColor="@color/grey_60" />
@@ -241,7 +241,7 @@
                         android:id="@+id/_id_led_state"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="30dp"
+                        android:layout_margin="@dimen/spacing_smlarge"
                         android:layout_gravity="center"
                         app:tbDefaultStatus="on"
                         app:tbIsMidSelectable="false"

@@ -293,7 +293,7 @@ public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.
         tvHumTime = findViewById(R.id.tvTimeHum);
         _btn_AlarmControl = findViewById(R.id._id_alarm_state);
         _btn_LedControl = findViewById(R.id._id_led_state);
-        _btn_FanControl = findViewById(R.id._id_led_state);
+        _btn_FanControl = findViewById(R.id._id_fan_state);
         _btnReset = findViewById(R.id._id_btnReset);
 
         _btn_FanControl.setOnToggleChanged(new TriStateToggleButton.OnToggleChanged() {
@@ -380,16 +380,17 @@ public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.
             @Override
             public void onMessage(String topic, String message) {
                 Log.i(ActivityMainMenu.class.getName(), topic + " ==> " + message);
-                String feedId = topic.replace(MqttHelper.clientId, "").toString().trim().toLowerCase();
+/*                String feedId = topic.replace(MqttHelper.clientId, "").toString().trim().toLowerCase();*/
+                String feedId = topic.trim().toLowerCase();
                 Log.i(ActivityMainMenu.class.getName(), feedId + " ==> " + message);
                 TriStateToggleButton.ToggleStatus status;
 
                 // add to log
-                addRecordToLog(message, feedId);
+                addRecordToLog(message, topic);
 
-                if (MqttHelper.feed_fan_state.toLowerCase().equals(feedId)) {
-                    try {
-
+                /*if (MqttHelper.feed_fan_state.toLowerCase().contains(feedId)) {*/
+                if(feedId.contains(MqttHelper.feed_fan_state.toLowerCase())) {
+                try {
                         _btn_FanControl.setToggleStatus("0".equals(message) == false);
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -398,7 +399,7 @@ public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.
                     return;
                 }
 
-                if (MqttHelper.feed_led_state.toLowerCase().equals(feedId)) {
+                if (feedId.contains(MqttHelper.feed_led_state.toLowerCase())){
                     try {
                         /*status = Boolean.parseBoolean(message) ? TriStateToggleButton.ToggleStatus.on : TriStateToggleButton.ToggleStatus.off;*/
                         _btn_LedControl.setToggleStatus("0".equals(message) == false);
@@ -409,7 +410,8 @@ public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.
                     return;
                 }
 
-                if (MqttHelper.feed_alarm_state.toLowerCase().equals(feedId)) {
+              //  if (MqttHelper.feed_alarm_state.toLowerCase().equals(feedId))
+                    if (feedId.contains(MqttHelper.feed_alarm_state.toLowerCase())){
                     try {
                         /*status = Boolean.parseBoolean(message) ? TriStateToggleButton.ToggleStatus.on : TriStateToggleButton.ToggleStatus.off;*/
                         _btn_AlarmControl.setToggleStatus("0".equals(message) == false);
@@ -419,8 +421,8 @@ public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.
                     }
                     return;
                 }
-
-                if (MqttHelper.feed_image.toLowerCase().equals(feedId)) {
+                if (feedId.contains(MqttHelper.feed_image.toLowerCase())){
+                //if (MqttHelper.feed_image.toLowerCase().equals(feedId)) {
                     try {
 
 //                        byte[] decodedString = Base64.decode(message, Base64.DEFAULT);
@@ -441,28 +443,19 @@ public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.
                     }
                     return;
                 }
-
-                if (MqttHelper.feed_message.toLowerCase().equals(feedId)) {
+                if (feedId.contains(MqttHelper.feed_message.toLowerCase())){
+                //if (MqttHelper.feed_message.toLowerCase().equals(feedId)) {
                     txtMessage.setText(message);
                     return;
                 }
 
-                if (MqttHelper.feed_logs.toLowerCase().equals(feedId)) {
-                    String json = message.toString();
-                    Log.i(TAG, "onResponse: " + json);
-                    Gson gson = new Gson();
-                    JsonDataFeedModel.Root root = gson.fromJson(json, JsonDataFeedModel.Root.class);
-                    // do something with the feed object
-                    String key = root.key;
-                    String value = root.name;
-
-                    if("ObjectDetection".equals(key)) {
-                        talkToMe("Xin chào " + value);
-                    }
+                if (feedId.contains(MqttHelper.feed_logs.toLowerCase())){
+               // if (MqttHelper.feed_logs.toLowerCase().contains(feedId)) {
+                    talkToMe("Xin chào " + message);
                     return;
                 }
 
-                if (MqttHelper.feed_humidity_meter.toLowerCase().equals(feedId)) {
+                if (feedId.contains(MqttHelper.feed_humidity_meter.toLowerCase())) {
                     try {
                         meterHumidity.speedTo(Float.parseFloat(message));
                         tvHum.setText(String.valueOf(Math.round(Float.parseFloat(message))));
@@ -473,7 +466,8 @@ public class ActivityMainMenu extends AppCompatActivity implements TextToSpeech.
                     return;
                 }
 
-                if (MqttHelper.feed_temperature_meter.toLowerCase().equals(feedId)) {
+                if (feedId.contains(MqttHelper.feed_temperature_meter.toLowerCase()))
+                  /*  if (MqttHelper.feed_temperature_meter.toLowerCase().equals(feedId))*/ {
                     try {
                         meterTemper.speedTo(Float.parseFloat(message));
                         tvTemp.setText(message);
